@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/services/movie_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,6 +27,19 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    printData();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  printData() {
+    MovieService movieService = MovieService();
+    final data = movieService.getPopularMovies();
+    print(data.toString());
   }
 
   @override
