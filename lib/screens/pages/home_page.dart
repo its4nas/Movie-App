@@ -59,10 +59,6 @@ class _HomePageState extends State<HomePage> {
     _topRatedMovies = await movieService.getTopRatedMovies();
     _upcomingMovies = await movieService.getUpcomingMovies();
     setState(() {
-      // _popularMovies = popularMovies;
-      // _topRatedMovies = topRatedMovies;
-      // _upcomingMovies = upcomingMovies;
-      // _filteredMovies = _popularMovies;
       _isLoading = false;
     });
   }
@@ -77,109 +73,118 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                height: _isSearching ? 50 : 0,
-              ),
-              searchBar(),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              // Your onTap action here
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Top Reated Movies',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Icon(Icons.arrow_forward, color: Colors.white),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      MovieSlider(topRatedMovies: _topRatedMovies),
-                      const SizedBox(height: 25),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              _isLoading = true;
+            });
+            await fetchMovies();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  height: _isSearching ? 50 : 0,
+                ),
+                searchBar(),
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : Column(
+                      children: [
                         Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              // Your onTap action here
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Popular Movies',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                // Your onTap action here
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Top Reated Movies',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Icon(Icons.arrow_forward, color: Colors.white),
-                              ],
+                                  Icon(Icons.arrow_forward, color: Colors.white),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      HorizontalCardScroller(movies: _popularMovies),
-                      const SizedBox(height: 25),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              // Your onTap action here
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'UpComing Movies',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                        const SizedBox(height: 15),
+                        MovieSlider(topRatedMovies: _topRatedMovies),
+                        const SizedBox(height: 25),
+                          Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                // Your onTap action here
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Popular Movies',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Icon(Icons.arrow_forward, color: Colors.white),
-                              ],
+                                  Icon(Icons.arrow_forward, color: Colors.white),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      HorizontalCardScroller(movies: _upcomingMovies),
-                      const SizedBox(height: 120),
-                    ],
-                  ),
-            ],
+                        const SizedBox(height: 15),
+                        HorizontalCardScroller(movies: _popularMovies),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              splashColor: Colors.transparent,
+                              onTap: () {
+                                // Your onTap action here
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'UpComing Movies',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_forward, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        HorizontalCardScroller(movies: _upcomingMovies),
+                        const SizedBox(height: 120),
+                      ],
+                    ),
+              ],
+            ),
           ),
         ),
       ),
