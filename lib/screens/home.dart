@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/pages/home_page.dart';
-
+import 'package:movie_app/screens/pages/top_rated_movies_page.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   static const Color primaryColor = Color.fromARGB(255, 214, 28, 28);
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: HomePage(),
           ),
           Center(
-            child: Text("data"),
+            child: TopRatedMoviesPage(),
           )
         ],
       ),
