@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       drawer: Drawer(
           backgroundColor: const Color.fromARGB(255, 45, 45, 45),
           child: ListView(
@@ -108,7 +109,7 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 30),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.black,

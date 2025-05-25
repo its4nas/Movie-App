@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide CarouselController;
 import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:movie_app/screens/movie_detail.dart';
 
 class MovieSlider extends StatelessWidget {
   final List<dynamic> topRatedMovies;

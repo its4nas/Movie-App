@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/screens/home.dart';
 import 'package:movie_app/services/movie_services.dart';
 import 'package:movie_app/screens/widgets/movie_slider.dart';
+import 'package:movie_app/screens/widgets/horizontal_card_scroller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -117,7 +118,65 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 15),
                       MovieSlider(topRatedMovies: _topRatedMovies),
-                      
+                      const SizedBox(height: 25),
+                        Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              // Your onTap action here
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Popular Movies',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(Icons.arrow_forward, color: Colors.white),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      HorizontalCardScroller(movies: _popularMovies),
+                      const SizedBox(height: 25),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              // Your onTap action here
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'UpComing Movies',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(Icons.arrow_forward, color: Colors.white),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      HorizontalCardScroller(movies: _upcomingMovies),
+                      const SizedBox(height: 120),
                     ],
                   ),
             ],
