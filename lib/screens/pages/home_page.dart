@@ -3,6 +3,7 @@ import 'package:movie_app/screens/home.dart';
 import 'package:movie_app/services/movie_services.dart';
 import 'package:movie_app/screens/widgets/movie_slider.dart';
 import 'package:movie_app/screens/widgets/horizontal_card_scroller.dart';
+import 'package:movie_app/screens/widgets/vertical_card_scroller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -179,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         const SizedBox(height: 15),
-                        HorizontalCardScroller(movies: _upcomingMovies),
+                        VerticalCardScroller(movies: _upcomingMovies),
                         const SizedBox(height: 120),
                       ],
                     ),
