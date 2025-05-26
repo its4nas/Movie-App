@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/home.dart';
+import 'package:movie_app/screens/widgets/offline.dart';
 import 'package:movie_app/services/movie_services.dart';
 import 'package:movie_app/screens/widgets/movie_slider.dart';
 import 'package:movie_app/screens/widgets/horizontal_card_scroller.dart';
 import 'package:movie_app/screens/widgets/vertical_card_scroller.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> _upcomingMovies = [];
   List<dynamic> _filteredMovies = [];
   bool _isLoading = true;
+  bool _isOffline = false;
+  String? _errorMessage;
 
   Widget searchBar() {
     return Container(
@@ -47,21 +51,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
   @override
   void initState() {
     fetchMovies();
-    // TODO: implement initState
     super.initState();
   }
 
   fetchMovies() async {
-    MovieService movieService = MovieService();
-    _popularMovies = await movieService.getPopularMovies();
-    _topRatedMovies = await movieService.getTopRatedMovies();
-    _upcomingMovies = await movieService.getUpcomingMovies();
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      setState(() {
+        _isLoading = true;
+        _isOffline = false;
+        _errorMessage = null;
+      });
+
+      MovieService movieService = MovieService();
+      _popularMovies = await movieService.getPopularMovies().timeout(
+        const Duration(seconds: 20),
+        onTimeout: () {
+          throw TimeoutException('Connection timed out');
+        },
+      );
+      _topRatedMovies = await movieService.getTopRatedMovies().timeout(
+        const Duration(seconds: 20),
+        onTimeout: () {
+          throw TimeoutException('Connection timed out');
+        },
+      );
+      _upcomingMovies = await movieService.getUpcomingMovies().timeout(
+        const Duration(seconds: 20),
+        onTimeout: () {
+          throw TimeoutException('Connection timed out');
+        },
+      );
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isOffline = false;
+          _errorMessage = null;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isOffline = true;
+          _errorMessage = e.toString().replaceAll('Exception: ', '');
+        });
+      }
+    }
   }
 
   @override
@@ -76,9 +116,6 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: RefreshIndicator(
           onRefresh: () async {
-            setState(() {
-              _isLoading = true;
-            });
             await fetchMovies();
           },
           child: SingleChildScrollView(
@@ -93,97 +130,109 @@ class _HomePageState extends State<HomePage> {
                 searchBar(),
                 _isLoading
                     ? const Center(child: CircularProgressIndicator())
-                    : Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                // Your onTap action here
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Top Reated Movies',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                    : _isOffline
+                        ? Offline(
+                            errorMessage: _errorMessage,
+                            onRetry: () {
+                              setState(() {
+                                _isLoading = true;
+                                _isOffline = false;
+                                _errorMessage = null;
+                              });
+                              fetchMovies();
+                            },
+                          )
+                        : Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      // Your onTap action here
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Top Rated Movies',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_forward, color: Colors.white),
+                                      ],
                                     ),
                                   ),
-                                  Icon(Icons.arrow_forward, color: Colors.white),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        MovieSlider(topRatedMovies: _topRatedMovies),
-                        const SizedBox(height: 25),
-                          Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                // Your onTap action here
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Popular Movies',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                              const SizedBox(height: 15),
+                              MovieSlider(topRatedMovies: _topRatedMovies),
+                              const SizedBox(height: 25),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      // Your onTap action here
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Popular Movies',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_forward, color: Colors.white),
+                                      ],
                                     ),
                                   ),
-                                  Icon(Icons.arrow_forward, color: Colors.white),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        HorizontalCardScroller(movies: _popularMovies),
-                        const SizedBox(height: 25),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                // Your onTap action here
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'UpComing Movies',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
+                              const SizedBox(height: 15),
+                              HorizontalCardScroller(movies: _popularMovies),
+                              const SizedBox(height: 25),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(8),
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      // Your onTap action here
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Upcoming Movies',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Icon(Icons.arrow_forward, color: Colors.white),
+                                      ],
                                     ),
                                   ),
-                                  Icon(Icons.arrow_forward, color: Colors.white),
-                                ],
+                                ),
                               ),
-                            ),
+                              const SizedBox(height: 15),
+                              VerticalCardScroller(movies: _upcomingMovies),
+                              const SizedBox(height: 120),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 15),
-                        VerticalCardScroller(movies: _upcomingMovies),
-                        const SizedBox(height: 120),
-                      ],
-                    ),
               ],
             ),
           ),

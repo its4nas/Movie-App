@@ -76,7 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Center(
             child: TopRatedMoviesPage(),
-          )
+          ),
+          Center(
+            child: Text('Top Rated Movies'),
+          ),
+          Center(
+            child: Text('Upcoming Movies'),
+          ),
+          Center(
+            child: Text('Search Movies'), 
+          ),
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
