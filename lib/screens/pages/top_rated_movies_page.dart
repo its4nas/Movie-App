@@ -69,9 +69,6 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
             children: [
-              const SizedBox(height: 10),
-              const Text('Top Rated Movies', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
               _isLoading 
                 ? const Center(child: CircularProgressIndicator())
                 : _isOffline
@@ -86,7 +83,15 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
                       fetchMovies();
                     },
                   )
-                  : VerticalCardScroller(movies: _topRatedMovies),
+                  : 
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      const Text('Top Rated Movies', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10),
+                      VerticalCardScroller(movies: _topRatedMovies),
+                    ],
+                  ),
               const SizedBox(height: 100),
               ],
           )

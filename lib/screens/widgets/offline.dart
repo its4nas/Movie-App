@@ -17,11 +17,14 @@ class Offline extends StatefulWidget {
 class _OfflineState extends State<Offline> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height - 300, // Subtract some height to account for app bar and other elements
+      alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/images/offline.png', width: 100, height: 100,),
+          Image.asset('assets/images/offline.png', width: 100, height: 100),
           const SizedBox(height: 16),
           const Text(
             'No Internet Connection',
@@ -31,10 +34,13 @@ class _OfflineState extends State<Offline> {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            widget.errorMessage ?? 'Please check your connection and try again',
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              widget.errorMessage ?? 'Please check your connection and try again',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
