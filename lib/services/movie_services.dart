@@ -5,15 +5,7 @@ import 'dart:io';
 class MovieService {
   final apitoken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYzhkMjU4NTdkYTk2MDVjYTExODlkMWI3NGI1Y2JlYSIsIm5iZiI6MTc0ODA3MzcyNS40OTMsInN1YiI6IjY4MzE3Y2ZkODJmNmE4YTcxMTQxMzg3YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l8jSjjaIczKVTj-az3MOAd1ouu_Yn4G15jGwOYnGMnc';
 
-  Future<List<dynamic>> _handleResponse(http.Response response) async {
-    if (response.statusCode == 200) {
-      return (json.decode(response.body))['results'];
-    } else {
-      throw Exception('Failed to load movies: ${response.statusCode}');
-    }
-  }
-
-  Future<List<dynamic>> _makeRequest(String url) async {
+  Future<dynamic> _makeRequest(String url) async {
     try {
       final headers = {
         'Authorization': 'Bearer $apitoken',
@@ -25,7 +17,12 @@ class MovieService {
         headers: headers,
       );
 
-      return await _handleResponse(response);
+      if (response.statusCode == 200) {
+         return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+
     } on SocketException catch (e) {
       throw Exception('No internet connection. Please check your network settings.');
     } on HttpException catch (e) {
@@ -38,18 +35,42 @@ class MovieService {
   }
 
   Future<List<dynamic>> getPopularMovies() async {
-    return _makeRequest('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1');
+    final responseData = await _makeRequest('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1');
+    if (responseData != null && responseData['results'] is List) {
+      return responseData['results'];
+    } else {
+      throw Exception('Failed to load popular movies: Invalid response format.');
+    }
   }
 
   Future<List<dynamic>> getTopRatedMovies() async {
-    return _makeRequest('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1');
+    final responseData = await _makeRequest('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1');
+    if (responseData != null && responseData['results'] is List) {
+      return responseData['results'];
+    } else {
+      throw Exception('Failed to load top rated movies: Invalid response format.');
+    }
   }
 
   Future<List<dynamic>> getUpcomingMovies() async {
-    return _makeRequest('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1');
+    final responseData = await _makeRequest('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1');
+    if (responseData != null && responseData['results'] is List) {
+      return responseData['results'];
+    } else {
+      throw Exception('Failed to load upcoming movies: Invalid response format.');
+    }
   }
 
   Future<List<dynamic>> getSimilarMovies(int movieId) async {
-    return _makeRequest('https://api.themoviedb.org/3/movie/${movieId}/similar?language=en-US&page=1');
+    final responseData = await _makeRequest('https://api.themoviedb.org/3/movie/${movieId}/similar?language=en-US&page=1');
+    if (responseData != null && responseData['results'] is List) {
+      return responseData['results'];
+    } else {
+      throw Exception('Failed to load similar movies: Invalid response format.');
+    }
+  }
+
+  Future<dynamic> getMovieDetails(int movieId) async {
+    return _makeRequest('https://api.themoviedb.org/3/movie/${movieId}?append_to_response=credits,videos');
   }
 }

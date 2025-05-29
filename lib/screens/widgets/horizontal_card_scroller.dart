@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/screens/widgets/movie_details.dart';
 
 class HorizontalCardScroller extends StatelessWidget {
   final List<dynamic> movies;
@@ -18,6 +19,12 @@ class HorizontalCardScroller extends StatelessWidget {
             final movie = movies[index];
             return GestureDetector(
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetails(movie: movie),
+                  ),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
