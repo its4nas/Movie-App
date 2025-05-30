@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:movie_app/screens/home.dart';
 import 'package:movie_app/services/movie_services.dart';
 
@@ -215,7 +214,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                   CircleAvatar(
                                     radius: 40,
                                     backgroundImage: NetworkImage(
-                                      'https://image.tmdb.org/t/p/w500/${cast['profile_path']}' ?? '',
+                                      'https://image.tmdb.org/t/p/w500/${cast['profile_path']}',
                                     ),
                                   ),
                                   SizedBox(height: 4),

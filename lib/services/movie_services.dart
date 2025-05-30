@@ -23,11 +23,11 @@ class MovieService {
         throw Exception('Failed to load data: ${response.statusCode}');
       }
 
-    } on SocketException catch (e) {
+    } on SocketException {
       throw Exception('No internet connection. Please check your network settings.');
-    } on HttpException catch (e) {
+    } on HttpException {
       throw Exception('Could not connect to the server. Please try again later.');
-    } on FormatException catch (e) {
+    } on FormatException {
       throw Exception('Invalid response format from server.');
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
