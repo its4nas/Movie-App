@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/widgets/movie_details.dart';
+import 'package:movie_app/screens/pages/movie_details_page.dart';
 
 class FilteredMoviesList extends StatelessWidget {
   final List<dynamic> movies;
