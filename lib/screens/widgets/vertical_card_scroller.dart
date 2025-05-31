@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:movie_app/screens/pages/movie_details_page.dart';
 
 class VerticalCardScroller extends StatelessWidget {
   final List<dynamic> movies;
@@ -14,6 +14,12 @@ class VerticalCardScroller extends StatelessWidget {
             final movie = movies[index];
             return GestureDetector(
               onTap: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetails(movie: movie),
+                  ),
+                );
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 8),
