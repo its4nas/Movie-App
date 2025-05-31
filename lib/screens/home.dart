@@ -44,22 +44,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pop(context);
                 },
               ),
-              // Add more ListTiles for other drawer items
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                leading: Icon(Icons.home, color: HomeScreen.primaryColor),
+                title: Text('Home', style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
         ),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: Text('Movie App', style: TextStyle(color: Colors.white)),
+          title: Text('Movie App', style: TextStyle(color: HomeScreen.primaryColor)),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: HomeScreen.primaryColor),
           actions: [
             IconButton(
               onPressed: () {
                 // Add your action here
               },
-              icon: Icon(Icons.notifications, color: Colors.white),
+              icon: Icon(Icons.notifications, color: HomeScreen.primaryColor),
             ),
           ],
         ),

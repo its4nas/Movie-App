@@ -5,6 +5,7 @@ import 'package:movie_app/services/movie_services.dart';
 import 'package:movie_app/screens/widgets/movie_slider.dart';
 import 'package:movie_app/screens/widgets/horizontal_card_scroller.dart';
 import 'package:movie_app/screens/widgets/vertical_card_scroller.dart';
+import 'package:movie_app/screens/widgets/filtered_movies_list.dart';
 import 'dart:async';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isSearching = false;
+  String _searchQuery = '';
 
   List<dynamic> _popularMovies = [];
   List<dynamic> _topRatedMovies = [];
@@ -24,6 +26,19 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
   bool _isOffline = false;
   String? _errorMessage;
+
+  void filteredMovies(String query) {
+    setState(() {
+      _filteredMovies = _popularMovies.where((movie) => movie['title'].toLowerCase().
+    toLowerCase().contains(query.toLowerCase())).toList()+
+    _topRatedMovies.where((movie) => movie['title'].toLowerCase().
+    toLowerCase().contains(query.toLowerCase())).toList()+
+    _upcomingMovies.where((movie) => movie['title'].toLowerCase().
+    toLowerCase().contains(query.toLowerCase())).toList();
+
+    _isSearching = false;
+    });
+  }
 
   Widget searchBar() {
     return Container(
@@ -36,6 +51,21 @@ class _HomePageState extends State<HomePage> {
       child: TextField(
         onTap: () => setState(() => _isSearching = true),
         onSubmitted: (_) => setState(() => _isSearching = false),
+        onChanged: (query) => {
+          if (query.isEmpty) {
+            setState(() {
+              _isSearching = false;
+              _searchQuery = '';
+              _filteredMovies = [];
+            }),
+          } else {
+            setState(() {
+              _searchQuery = query;
+              filteredMovies(query);
+              _isSearching = true;
+            }),
+          },
+        },
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search Movies & Show',
@@ -129,7 +159,21 @@ class _HomePageState extends State<HomePage> {
                 ),
                 searchBar(),
                 _isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator()):
+                    _isSearching?
+                    Column(
+                      children: [
+                        Padding(padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text('Search Results',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        ),
+                        ),
+                        FilteredMoviesList(movies: _filteredMovies, query: _searchQuery),
+                      ],
+                    )
                     : _isOffline
                         ? Offline(
                             errorMessage: _errorMessage,
