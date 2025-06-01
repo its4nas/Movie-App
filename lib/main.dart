@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/home.dart';
+import 'package:movie_app/screens/splash_screen.dart';
 
 void main() {
   runApp(const MovieApp());
@@ -26,7 +26,7 @@ class MovieApp extends StatelessWidget {
           titleSmall: TextStyle(color: Colors.white),
         ),
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
