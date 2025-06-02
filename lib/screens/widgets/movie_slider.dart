@@ -18,6 +18,18 @@ class MovieSlider extends StatelessWidget {
             child: Image.network(
               'https://image.tmdb.org/t/p/w500/${movie['backdrop_path']}',
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[800],
+                  child: Center(
+                    child: Icon(
+                      Icons.movie,
+                      size: 50,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         );

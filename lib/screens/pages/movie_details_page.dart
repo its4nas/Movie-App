@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/screens/home.dart';
 import 'package:movie_app/services/movie_services.dart';
+import 'package:movie_app/screens/widgets/offline.dart';
+import 'dart:io';
 
 class MovieDetails extends StatefulWidget {
   final dynamic movie;
@@ -17,26 +19,62 @@ class MovieDetails extends StatefulWidget {
 class _MovieDetailsState extends State<MovieDetails> {
   List<dynamic> movies = [];
   dynamic detailedMovie;
+  bool _isOffline = false;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    fetchMovieDetails();
     fetchDetailedMovie();
   }
 
-  void fetchMovieDetails() async{
-    MovieService movieService = MovieService();
-    movies = await movieService.getSimilarMovies(widget.movie['id']);
-  }
-
   void fetchDetailedMovie() async {
-    MovieService movieService = MovieService();
-    detailedMovie = await movieService.getMovieDetails(widget.movie['id']);
-    setState(() {});
+    try {
+      MovieService movieService = MovieService();
+      detailedMovie = await movieService.getMovieDetails(widget.movie['id']);
+      if (mounted) {
+        setState(() {
+          _isOffline = false;
+          _errorMessage = null;
+        });
+      }
+    } on SocketException catch (_) {
+      if (mounted) {
+        setState(() {
+          _isOffline = true;
+          _errorMessage = 'No internet connection';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isOffline = true;
+          _errorMessage = e.toString().replaceAll('Exception: ', '');
+        });
+      }
+    }
   }
 
   Widget build(BuildContext context) {
+    if (_isOffline) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.movie['title']),
+          backgroundColor: Colors.black,
+        ),
+        body: Offline(
+          errorMessage: _errorMessage,
+          onRetry: () {
+            setState(() {
+              _isOffline = false;
+              _errorMessage = null;
+            });
+            fetchDetailedMovie();
+          },
+        ),
+      );
+    }
+
     if (detailedMovie == null) {
       return Scaffold(
         appBar: AppBar(
@@ -48,7 +86,16 @@ class _MovieDetailsState extends State<MovieDetails> {
     }
 
     return Scaffold(
-      body: 
+      body:
+      _isOffline ? 
+      Offline(
+        onRetry: () {
+          setState(() {
+            _isOffline = false;
+          });
+          fetchDetailedMovie();
+        },
+      ):
       Column(
         children: [
           Stack(
