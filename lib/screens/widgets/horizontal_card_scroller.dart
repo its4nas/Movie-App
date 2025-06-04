@@ -5,12 +5,10 @@ import 'dart:io';
 
 class HorizontalCardScroller extends StatelessWidget {
   final List<dynamic> movies;
-  final String title;
 
   const HorizontalCardScroller({
     super.key,
     required this.movies,
-    required this.title,
   });
 
   Future<bool> checkConnectivity() async {
@@ -27,16 +25,6 @@ class HorizontalCardScroller extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
         Container(
           height: 200,
           child: ListView.builder(

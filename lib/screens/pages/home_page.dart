@@ -243,10 +243,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 20),
                               HorizontalCardScroller(
                                 movies: _popularMovies,
-                                title: 'Popular Movies',
                               ),
                               const SizedBox(height: 25),
                               Padding(
