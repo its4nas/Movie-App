@@ -137,7 +137,7 @@ class CustomBottomNavBar extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _buildNavItem(Icons.home, 0),
+              child: _buildNavItem(ImageIcon(AssetImage('assets/images/ic_home_filled.png')), 0),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -161,7 +161,8 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, int index) {
+  Widget _buildNavItem(dynamic icon, int index) {
+    final Color iconColor = currentIndex == index ? Colors.white : Colors.white;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 600),
       curve: Curves.easeInOut,
@@ -170,11 +171,17 @@ class CustomBottomNavBar extends StatelessWidget {
         color: currentIndex == index ? HomeScreen.primaryColor : Colors.transparent,
       ),
       child: IconButton(
-        icon: Icon(
-          icon,
-          color: currentIndex == index ? Colors.white : Colors.grey[600],
-          size: 35,
-        ),
+        icon: icon is IconData 
+          ? Icon(
+              icon,
+              color: iconColor,
+              size: 35,
+            )
+          : ImageIcon(
+              (icon as ImageIcon).image,
+              color: iconColor,
+              size: 35,
+            ),
         onPressed: () => onTap(index),
       ),
     );
